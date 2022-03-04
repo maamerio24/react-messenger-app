@@ -3,8 +3,14 @@ import { Route, Routes, Link } from 'react-router-dom'
 import { Home } from './views/Home'
 import { Sent } from './views/Sent'
 import { Trash } from './views/Trash'
+import { useAuth } from './contexts/AuthProvider'
+
 
 export const App = () => {
+
+  const { signIn, currentUser, logOut } = useAuth()
+
+
   return (
     <React.Fragment>
       <header>
@@ -17,24 +23,37 @@ export const App = () => {
               <li className="nav-item active">
                 <Link className="nav-link" to="/">Inbox <span className="sr-only">(current)</span></Link>
               </li>
-              <li className="nav-item">
+              <li className="nav-item active">
                 <Link className="nav-link" to="/sent">Sent</Link>
               </li>
-              <li className="nav-item">
+              <li className="nav-item active">
                 <Link className="nav-link" to="/trash">Trash</Link>
               </li>
+            </ul>
+            <ul className="navbar-nav ml-auto">
+              {
+                !currentUser.loggedIn
+                  ?
+                  <li className="nav-item active">
+                    <Link onClick={() => signIn()} className="nav-link" to="." >Sign in</Link>
+                  </li>
+                  :
+                  <li className="nav-item active">
+                    <Link onClick={() => logOut()} className="nav-link" to=".">Sign out</Link>
+                  </li>
+              }
             </ul>
 
           </div>
         </nav>
       </header>
-      
+
       <main className="container">
-      <Routes>
-        <Route exact path='/' element={<Home />} />
-        <Route exact path='/sent' element={<Sent />} />
-        <Route exact path='/trash' element={<Trash />} />
-      </Routes>
+        <Routes>
+          <Route exact path='/' element={<Home />} />
+          <Route exact path='/sent' element={<Sent />} />
+          <Route exact path='/trash' element={<Trash />} />
+        </Routes>
       </main>
 
       <footer>
